@@ -25,12 +25,10 @@ public class Questao implements Serializable {
 
 	private String alternativaCorreta;
 
-	@Override
-	public String toString() {
-		return "Questao [id=" + id + ", nivel=" + nivel + ", pergunta=" + pergunta + ", alternativa_A=" + alternativa_A
-				+ ", alternativa_B=" + alternativa_B + ", alternativa_C=" + alternativa_C + ", alternativa_D="
-				+ alternativa_D + ", alternativa_E=" + alternativa_E + ", alternativaCorreta=" + alternativaCorreta
-				+ "]";
+	
+
+	public Questao() {
+		super();
 	}
 
 	public long getId() {

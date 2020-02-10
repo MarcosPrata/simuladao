@@ -46,9 +46,7 @@ public class ProvasControllerTest {
 	@Before
 	public void set() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-		provaQueExiste = provasRepository.save(
-			new Prova()
-		);
+		provaQueExiste = provasRepository.save(	new Prova()	);
 		provaQueNaoExiste = new Prova();
 	}
 

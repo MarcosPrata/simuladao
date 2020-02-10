@@ -23,11 +23,6 @@ public class Aluno implements Serializable{
 		this.nome = nome;
 	}
 
-	@Override
-	public String toString() {
-		return "Aluno [id=" + id + ", nome=" + nome + "]";
-	}
-
 	public long getId() {
 		return id;
 	}

@@ -103,7 +103,7 @@ public class SimuladosControllerTest {
 
 		Simulado aluno = simuladosRepository.findById(simuladoQueExiste.getId());
 
-		aluno.setTitulo("Simulado com Pergunta Alterada");
+		aluno.setTitulo("Simulado 1");
 
 		ResultActions response = mockMvc.perform(
 				put("/api/simulados").content(om.writeValueAsString(aluno)).contentType(MediaType.APPLICATION_JSON));

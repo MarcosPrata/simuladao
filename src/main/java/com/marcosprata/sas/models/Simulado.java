@@ -1,6 +1,7 @@
 package com.marcosprata.sas.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -20,11 +21,10 @@ public class Simulado implements Serializable{
 	@JoinColumn(name = "simulado_fk", referencedColumnName = "id")
 	private List<Questao> questoes;
 	
-
-	
-	@Override
-	public String toString() {
-		return "Simulado [id=" + id + ", titulo=" + titulo + ", questoes=" + questoes + "]";
+	public Simulado() {
+		super();
+		this.titulo = "";
+		this.questoes = new ArrayList<Questao>();
 	}
 
 	public long getId() {

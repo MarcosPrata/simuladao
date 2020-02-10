@@ -70,7 +70,7 @@ public class ProvasController {
 	@ApiOperation(value = "Deleta uma prova da base.")
 	public ResponseEntity<?> deletaProva(@RequestBody Prova provaRecebida) {
 		Prova provaVerificada = provasRepository.findById(provaRecebida.getId());
-		if (provaVerificada != null) {
+		if (provaVerificada == null) {
 			return new ResponseEntity<>("Prova nao cadastrada.", HttpStatus.NOT_FOUND);
 		}
 		provasRepository.delete(provaVerificada);

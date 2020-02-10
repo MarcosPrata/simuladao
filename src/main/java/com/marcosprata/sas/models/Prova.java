@@ -1,6 +1,7 @@
 package com.marcosprata.sas.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -28,6 +29,14 @@ public class Prova implements Serializable, Comparable<Prova>{
 	
 	private int nota;
 	
+	
+	public Prova() {
+		super();
+		this.nota = 0;
+		this.aluno = new Aluno();
+		this.simulado = new Simulado();
+		this.gabarito = new ArrayList<String>();
+	}
 	
 	public List<String> getGabarito() {
 		return gabarito;

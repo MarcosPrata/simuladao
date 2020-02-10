@@ -39,7 +39,7 @@ public class SimuladosController {
 		if (simuladoVerificado != null) {
 			return new ResponseEntity<>("Simulado ja cadastrado.", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(simuladosRepository.save(simuladoVerificado), HttpStatus.OK);
+		return new ResponseEntity<>(simuladosRepository.save(simuladoRecebido), HttpStatus.OK);
 	}
 	
 	@GetMapping("/simulados/{id_simulado}")
