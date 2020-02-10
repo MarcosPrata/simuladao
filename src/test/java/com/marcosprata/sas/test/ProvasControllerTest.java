@@ -23,114 +23,117 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcosprata.sas.models.Aluno;
-import com.marcosprata.sas.repository.AlunosRepository;
+import com.marcosprata.sas.models.Prova;
+import com.marcosprata.sas.repository.ProvasRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class AlunosControllerTest {
+public class ProvasControllerTest {
 
 	private MockMvc mockMvc;
 	@Autowired
 	private WebApplicationContext context;
 	@Autowired
-	private AlunosRepository alunosRepository;
+	private ProvasRepository provasRepository;
 
 	ObjectMapper om = new ObjectMapper();
 
-	Aluno alunoQueExiste;
-	Aluno alunoQueNaoExiste;
+	Prova provaQueExiste;
+	Prova provaQueNaoExiste;
 
 	// Setar ambiente e variaveis de testes -----------------------------
 	@Before
 	public void set() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-		alunoQueExiste = alunosRepository.save(new Aluno().setNome("Aluno de teste 1"));
-		alunoQueNaoExiste = new Aluno().setNome("Aluno de teste 2");
+		provaQueExiste = provasRepository.save(
+			new Prova()
+		);
+		provaQueNaoExiste = new Prova();
 	}
 
 	@After
 	public void tearDown() {
-		alunosRepository.delete(alunoQueExiste);
-		alunosRepository.delete(alunoQueNaoExiste);
+		provasRepository.delete(provaQueExiste);
+		provasRepository.delete(provaQueNaoExiste);
 	}
 
-	// Adicionar Aluno-----------------------------
+	// Adicionar Prova -----------------------------
 	@Test
-	public void adicionarAluno_QueExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(post("/api/alunos").content(om.writeValueAsString(alunoQueExiste))
+	public void adicionarProva_QueExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(post("/api/provas").content(om.writeValueAsString(provaQueExiste))
 				.contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isBadRequest()).andReturn();
 	}
 
 	@Test
-	public void adicionarAluno_QueNaoExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(post("/api/alunos").content(om.writeValueAsString(alunoQueNaoExiste))
+	public void adicionarProva_QueNaoExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(post("/api/provas").content(om.writeValueAsString(provaQueNaoExiste))
 				.contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON)).andReturn();
 	}
 
-	// Pegar Aluno --------------------------------
+	// Pegar Prova --------------------------------
 	@Test
-	public void pegaAluno_QueExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(get("/api/alunos/" + alunoQueExiste.getId()));
+	public void pegaProva_QueExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(get("/api/provas/" + provaQueExiste.getId()));
 
 		response.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(content().string(om.writeValueAsString(alunoQueExiste))).andReturn();
+				.andExpect(content().string(om.writeValueAsString(provaQueExiste))).andReturn();
 	}
 
 	@Test
-	public void pegaAluno_QueNaoExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(get("/api/alunos/" + (-1)));
+	public void pegaProva_QueNaoExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(get("/api/provas/" + (-1)));
 
 		response.andExpect(status().isNotFound()).andReturn();
 	}
 
 	@Test
-	public void pegaAlunosTest() throws Exception {
-		ResultActions response = mockMvc.perform(get("/api/alunos").contentType(MediaType.APPLICATION_JSON));
+	public void pegaProvasTest() throws Exception {
+		ResultActions response = mockMvc.perform(get("/api/provas").contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON)).andReturn();
 	}
 
-	// Atualizar Aluno ----------------------------
+	// Atualizar Prova ----------------------------
 	@Test
-	public void atualizaAluno_QueExiste_Test() throws Exception {
+	public void atualizaProva_QueExiste_Test() throws Exception {
 
-		Aluno aluno = alunosRepository.findById(alunoQueExiste.getId());
+		Prova prova = provasRepository.findById(provaQueExiste.getId());
 
-		aluno.setNome("Aluno com nome Alterado");
+		prova.setAluno(new Aluno().setNome("Joaozinho"));
 
 		ResultActions response = mockMvc.perform(
-				put("/api/alunos").content(om.writeValueAsString(aluno)).contentType(MediaType.APPLICATION_JSON));
+				put("/api/provas").content(om.writeValueAsString(prova)).contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(content().string(om.writeValueAsString(aluno))).andReturn();
+				.andExpect(content().string(om.writeValueAsString(prova))).andReturn();
 	}
 
 	@Test
-	public void atualizaAluno_QueNaoExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(put("/api/alunos").content(om.writeValueAsString(alunoQueNaoExiste))
+	public void atualizaProva_QueNaoExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(put("/api/provas").content(om.writeValueAsString(provaQueNaoExiste))
 				.contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isNotFound()).andReturn();
 	}
 
-	// Deletar Aluno ------------------------------
+	// Deletar Prova ------------------------------
 	@Test
-	public void deletaAluno_QueExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(delete("/api/alunos").content(om.writeValueAsString(alunoQueExiste))
+	public void deletaProva_QueExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(delete("/api/provas").content(om.writeValueAsString(provaQueExiste))
 				.contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isOk()).andReturn();
 	}
 
 	@Test
-	public void deletaAluno_QueNaoExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(delete("/api/alunos").content(om.writeValueAsString(alunoQueNaoExiste))
-				.contentType(MediaType.APPLICATION_JSON));
+	public void deletaProva_QueNaoExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(delete("/api/provas")
+				.content(om.writeValueAsString(provaQueNaoExiste)).contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isNotFound()).andReturn();
 	}

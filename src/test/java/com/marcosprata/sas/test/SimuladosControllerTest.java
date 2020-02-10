@@ -22,115 +22,117 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcosprata.sas.models.Aluno;
-import com.marcosprata.sas.repository.AlunosRepository;
+import com.marcosprata.sas.models.Simulado;
+import com.marcosprata.sas.repository.SimuladosRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class AlunosControllerTest {
+public class SimuladosControllerTest {
 
 	private MockMvc mockMvc;
 	@Autowired
 	private WebApplicationContext context;
 	@Autowired
-	private AlunosRepository alunosRepository;
+	private SimuladosRepository simuladosRepository;
 
 	ObjectMapper om = new ObjectMapper();
 
-	Aluno alunoQueExiste;
-	Aluno alunoQueNaoExiste;
+	Simulado simuladoQueExiste;
+	Simulado simuladoQueNaoExiste;
 
 	// Setar ambiente e variaveis de testes -----------------------------
 	@Before
 	public void set() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-		alunoQueExiste = alunosRepository.save(new Aluno().setNome("Aluno de teste 1"));
-		alunoQueNaoExiste = new Aluno().setNome("Aluno de teste 2");
+		simuladoQueExiste = simuladosRepository.save(
+			new Simulado().setTitulo("Simulado 1")
+		);
+		simuladoQueNaoExiste = new Simulado().setTitulo("Simulado 2");
 	}
 
 	@After
 	public void tearDown() {
-		alunosRepository.delete(alunoQueExiste);
-		alunosRepository.delete(alunoQueNaoExiste);
+		simuladosRepository.delete(simuladoQueExiste);
+		simuladosRepository.delete(simuladoQueNaoExiste);
 	}
 
-	// Adicionar Aluno-----------------------------
+	// Adicionar Simulado -----------------------------
 	@Test
-	public void adicionarAluno_QueExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(post("/api/alunos").content(om.writeValueAsString(alunoQueExiste))
+	public void adicionarSimulado_QueExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(post("/api/simulados").content(om.writeValueAsString(simuladoQueExiste))
 				.contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isBadRequest()).andReturn();
 	}
 
 	@Test
-	public void adicionarAluno_QueNaoExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(post("/api/alunos").content(om.writeValueAsString(alunoQueNaoExiste))
+	public void adicionarSimulado_QueNaoExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(post("/api/simulados").content(om.writeValueAsString(simuladoQueNaoExiste))
 				.contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON)).andReturn();
 	}
 
-	// Pegar Aluno --------------------------------
+	// Pegar Simulado --------------------------------
 	@Test
-	public void pegaAluno_QueExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(get("/api/alunos/" + alunoQueExiste.getId()));
+	public void pegaSimulado_QueExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(get("/api/simulados/" + simuladoQueExiste.getId()));
 
 		response.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(content().string(om.writeValueAsString(alunoQueExiste))).andReturn();
+				.andExpect(content().string(om.writeValueAsString(simuladoQueExiste))).andReturn();
 	}
 
 	@Test
-	public void pegaAluno_QueNaoExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(get("/api/alunos/" + (-1)));
+	public void pegaSimulado_QueNaoExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(get("/api/simulados/" + (-1)));
 
 		response.andExpect(status().isNotFound()).andReturn();
 	}
 
 	@Test
-	public void pegaAlunosTest() throws Exception {
-		ResultActions response = mockMvc.perform(get("/api/alunos").contentType(MediaType.APPLICATION_JSON));
+	public void pegaSimuladosTest() throws Exception {
+		ResultActions response = mockMvc.perform(get("/api/simulados").contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON)).andReturn();
 	}
 
-	// Atualizar Aluno ----------------------------
+	// Atualizar Simulado ----------------------------
 	@Test
-	public void atualizaAluno_QueExiste_Test() throws Exception {
+	public void atualizaSimulado_QueExiste_Test() throws Exception {
 
-		Aluno aluno = alunosRepository.findById(alunoQueExiste.getId());
+		Simulado aluno = simuladosRepository.findById(simuladoQueExiste.getId());
 
-		aluno.setNome("Aluno com nome Alterado");
+		aluno.setTitulo("Simulado com Pergunta Alterada");
 
 		ResultActions response = mockMvc.perform(
-				put("/api/alunos").content(om.writeValueAsString(aluno)).contentType(MediaType.APPLICATION_JSON));
+				put("/api/simulados").content(om.writeValueAsString(aluno)).contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().string(om.writeValueAsString(aluno))).andReturn();
 	}
 
 	@Test
-	public void atualizaAluno_QueNaoExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(put("/api/alunos").content(om.writeValueAsString(alunoQueNaoExiste))
+	public void atualizaSimulado_QueNaoExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(put("/api/simulados").content(om.writeValueAsString(simuladoQueNaoExiste))
 				.contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isNotFound()).andReturn();
 	}
 
-	// Deletar Aluno ------------------------------
+	// Deletar Simulado ------------------------------
 	@Test
-	public void deletaAluno_QueExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(delete("/api/alunos").content(om.writeValueAsString(alunoQueExiste))
+	public void deletaSimulado_QueExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(delete("/api/simulados").content(om.writeValueAsString(simuladoQueExiste))
 				.contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isOk()).andReturn();
 	}
 
 	@Test
-	public void deletaAluno_QueNaoExiste_Test() throws Exception {
-		ResultActions response = mockMvc.perform(delete("/api/alunos").content(om.writeValueAsString(alunoQueNaoExiste))
-				.contentType(MediaType.APPLICATION_JSON));
+	public void deletaSimulado_QueNaoExiste_Test() throws Exception {
+		ResultActions response = mockMvc.perform(delete("/api/simulados")
+				.content(om.writeValueAsString(simuladoQueNaoExiste)).contentType(MediaType.APPLICATION_JSON));
 
 		response.andExpect(status().isNotFound()).andReturn();
 	}
