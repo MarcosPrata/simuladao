@@ -15,6 +15,13 @@ public class Aluno implements Serializable{
 	private long id;
 	private String nome;
 	
+	public Aluno() {}
+	
+	public Aluno(long id, String nome) {
+		super();
+		this.id = id;
+		this.nome = nome;
+	}
 
 	@Override
 	public String toString() {

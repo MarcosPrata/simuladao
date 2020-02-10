@@ -10,6 +10,7 @@
     <class>com.marcosprata.sas.models.Questao</class>
     <class>com.marcosprata.sas.models.Simulado</class>
     <properties>
+    <property name="hibernate.enable_lazy_load_no_trans" value="true"/>
       <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
       <property name="javax.persistence.jdbc.url"    value="jdbc:h2:mem:test" />
       <property name="javax.persistence.jdbc.user" value="sa" />

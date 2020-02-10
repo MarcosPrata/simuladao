@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,14 +34,23 @@ public class SimuladosController {
 	
 	@PostMapping("/simulados")
 	@ApiOperation(value = "Adiciona um simulado na base.")
-	public Simulado salvaQuestao(@RequestBody Simulado simulado) {
-		return simuladosRepository.save(simulado);
+	public ResponseEntity<?> salvaQuestao(@RequestBody Simulado simuladoRecebido) {
+		Simulado simuladoVerificado = simuladosRepository.findById(simuladoRecebido.getId());
+		if (simuladoVerificado != null) {
+			return new ResponseEntity<>("Simulado ja cadastrado.", HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(simuladosRepository.save(simuladoVerificado), HttpStatus.OK);
 	}
 	
 	@GetMapping("/simulados/{id_simulado}")
 	@ApiOperation(value = "Pega um simulado pelo seu ID.")
-	public Simulado pegaSimulado(@PathVariable(value = "id_simulado") long id) {
-		return simuladosRepository.findById(id);
+	public ResponseEntity<?> pegaSimulado(@PathVariable(value = "id_simulado") long id) {
+		Simulado simulado = simuladosRepository.findById(id);
+		if (simulado == null) {
+			return new ResponseEntity<>("Simulado nao cadastrado.", HttpStatus.NOT_FOUND);
+		}else {
+			return new ResponseEntity<>(simulado, HttpStatus.OK);
+		}
 	}
 	
 	@GetMapping("/simulados")
@@ -50,25 +61,33 @@ public class SimuladosController {
 
 	@PutMapping("/simulados")
 	@ApiOperation(value = "Altera um simulado.")
-	public Simulado atualizaSimulado(@RequestBody Simulado simulado) {
-		return simuladosRepository.save(simulado);
+	public ResponseEntity<?> atualizaSimulado(@RequestBody Simulado simuladoRecebido) {
+		Simulado simuladoVerificado = simuladosRepository.findById(simuladoRecebido.getId());
+		if (simuladoVerificado == null) {
+			return new ResponseEntity<>("Simulado nao cadastrado.", HttpStatus.NOT_FOUND);
+		}else 
+			return new ResponseEntity<>(simuladosRepository.save(simuladoRecebido), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/simulados")
 	@ApiOperation(value = "Deleta um simulado da base.")
-	public void deletaSimulado(@RequestBody Simulado simulado) {
-		simuladosRepository.delete(simulado);
+	public ResponseEntity<?> deletaSimulado(@RequestBody Simulado simuladoRecebido) {
+		Simulado simuladoVerificado = simuladosRepository.findById(simuladoRecebido.getId());
+		if (simuladoVerificado == null) {
+			return new ResponseEntity<>("Simulado nao cadastrado.", HttpStatus.NOT_FOUND);
+		}
+		simuladosRepository.delete(simuladoVerificado);
+		return new ResponseEntity<>(simuladoVerificado.getTitulo() + " foi removido(a).", HttpStatus.OK);
 	}
 
 	@GetMapping("/simulados/{id_simulado}/ranking")
-	@ApiOperation(value = "Traz uma lista com as provas realizadas nesse simulado com ordem crescente"
-			+ "com base na nota obtida pelo Aluno.")
+	@ApiOperation(value = "Traz uma ranking com as 5 provas de melhores resultados em um simulado.")
 	public List<Prova> ranking(@PathVariable(value = "id_simulado") long id) {
 		Simulado simulado = simuladosRepository.findById(id);
 		List<Prova> provas = provasRepository.findBySimulado(simulado);
 		for (Prova prova : provas) { prova.calculaNota(); }
 		Collections.sort(provas);
-		return provas;
+		return provas.subList(0, 5);
 	}
 
 }
